@@ -1,0 +1,38 @@
+podTemplate(yaml: '''
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels: 
+        some-label: mix-slave
+    spec:
+      containers:
+      - name: sosun
+        image: python
+        command:
+        - sleep
+        args:
+        - 999999
+      - name: java
+        image: openjdk:18
+        command:
+        - sleep
+        args:
+        - 999999
+    ''') {
+    node(POD_LABEL) {
+      container('sosun') {
+        echo POD_CONTAINER // echo container name
+        sh '''
+            python3 --version
+            sleep 50
+        '''
+      }
+      container('java') {
+        echo POD_CONTAINER // echo container name
+        sh '''
+            java --version
+            sleep 50
+        '''
+      }
+    }
+}
